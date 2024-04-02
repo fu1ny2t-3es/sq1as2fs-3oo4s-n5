@@ -64,6 +64,7 @@ runs:
       CXX: ccache ${{ env.MINGW_CXX }}
     shell: bash
     run: |
+      sudo apt-get install libreadline-dev
       ./scripts/mkwinbins.sh
 
 
