@@ -1,9 +1,1 @@
-libcompat_a_SOURCES = include/compat.h lib/compat/src/getsubopt.c \
-	lib/compat/src/strndup.c lib/compat/src/mockups.c \
-	lib/compat/src/chdir.c lib/compat/src/path_to_windows.c \
-	lib/compat/src/w32_perror.c lib/compat/src/w32_wmain.c \
-	lib/compat/src/w32_stdio.c lib/compat/src/fnmatch.c \
-	lib/compat/src/getopt.c lib/compat/src/getopt_long.c \
-	lib/compat/src/strchrnul.c
 
-noinst_LIBRARIES += libcompat.a
