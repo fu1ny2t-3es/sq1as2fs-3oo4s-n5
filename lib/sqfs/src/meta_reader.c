@@ -129,6 +129,11 @@ int sqfs_meta_reader_seek(sqfs_meta_reader_t *m, sqfs_u64 block_start,
 		return err;
 
 	if (compressed) {
+		if (m->data[0] == 0x08 && m->data[1] == 0xaa) {  /* Evercade VS 2.1.0 */
+			for (lcv = 0; lcv < size; lcv++)
+				m->data[lcv] ^= 0x70;
+		}
+
 		ret = m->cmp->do_block(m->cmp, m->data, size,
 				       m->scratch, sizeof(m->scratch));
 
