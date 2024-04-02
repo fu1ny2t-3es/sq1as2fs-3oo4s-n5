@@ -91,3 +91,4 @@ runs:
       name: program_${{ inputs.arch }}
       path: |
         ${{ github.workspace }}/**.exe
+        ${{ github.workspace }}/**.zip
