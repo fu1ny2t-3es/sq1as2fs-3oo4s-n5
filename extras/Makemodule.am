@@ -10,12 +10,4 @@ list_files_LDADD = libsquashfs.la
 extract_one_SOURCES = extras/extract_one.c
 extract_one_LDADD = libsquashfs.la
 
-if WITH_READLINE
-sqfsbrowse_SOURCES = extras/browse.c
-sqfsbrowse_CFLAGS = $(AM_CFLAGS) $(READLINE_CFLAGS)
-sqfsbrowse_LDADD = libsquashfs.la $(READLINE_LIBS)
-
-noinst_PROGRAMS += sqfsbrowse
-endif
-
 noinst_PROGRAMS += mknastyfs mk42sqfs list_files extract_one
