@@ -1,13 +1,1 @@
-mknastyfs_SOURCES = extras/mknastyfs.c
-mknastyfs_LDADD = libsquashfs.la
 
-mk42sqfs_SOURCES = extras/mk42sqfs.c
-mk42sqfs_LDADD = libsquashfs.la
-
-list_files_SOURCES = extras/list_files.c
-list_files_LDADD = libsquashfs.la
-
-extract_one_SOURCES = extras/extract_one.c
-extract_one_LDADD = libsquashfs.la
-
-noinst_PROGRAMS += mknastyfs mk42sqfs list_files extract_one
