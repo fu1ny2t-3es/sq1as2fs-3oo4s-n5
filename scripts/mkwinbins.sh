@@ -5,13 +5,9 @@ set -e
 VERSION=$(grep AC_INIT configure.ac | grep -o \\[[0-9.]*\\] | tr -d [])
 
 W32_ZIP_NAME="squashfs-tools-ng-${VERSION}-mingw32"
-W64_ZIP_NAME="squashfs-tools-ng-${VERSION}-mingw64"
 
 W32_DIR="$(pwd)/$W32_ZIP_NAME"
 W32_PREFIX="i686-w64-mingw32"
-
-W64_DIR="$(pwd)/$W64_ZIP_NAME"
-W64_PREFIX="x86_64-w64-mingw32"
 
 PKG_URL="https://infraroot.at/pub/squashfs/windows"
 
@@ -44,10 +40,8 @@ PKG_HASH="7db46b8d7726232a621befaab4a1c870f00a90805511c0e0090441dac57def18"
 download
 
 mkdir -p "$W32_DIR/bin" "$W32_DIR/include" "$W32_DIR/lib/pkgconfig"
-mkdir -p "$W64_DIR/bin" "$W64_DIR/include" "$W64_DIR/lib/pkgconfig"
 
 cp "$PKG_DIR/zlib.h" "$PKG_DIR/zconf.h" "$W32_DIR/include"
-cp "$PKG_DIR/zlib.h" "$PKG_DIR/zconf.h" "$W64_DIR/include"
 
 pushd "$PKG_DIR"
 obj="adler32.o compress.o crc32.o deflate.o gzclose.o gzlib.o gzread.o"
@@ -182,11 +176,6 @@ mv dll/*.dll "$W32_DIR/bin"
 cp *.h "$W32_DIR/include"
 rm *.o *.a
 
-make TARGET_OS=Windows CC=${W64_PREFIX}-gcc WINDRES=${W64_PREFIX}-windres
-mv dll/*.lib "$W64_DIR/lib"
-mv dll/*.dll "$W64_DIR/bin"
-cp *.h "$W64_DIR/include"
-rm *.o *.a
 popd
 
 cat > "$W32_DIR/lib/pkgconfig/liblz4.pc" <<_EOF
