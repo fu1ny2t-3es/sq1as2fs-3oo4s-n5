@@ -56,12 +56,6 @@ runs:
       }
 
 
-  - shell: bash
-    run: |
-      ./configure
-      make
-      make install
-
 
   - if: inputs.arch == 'x86' || inputs.arch == 'x64'
     working-directory: ${{ github.workspace }}
@@ -81,7 +75,7 @@ runs:
       CXX: ccache g++
     shell: bash
     run: |
-      make platform="unix"
+      ./autogen.sh
 
 
 
