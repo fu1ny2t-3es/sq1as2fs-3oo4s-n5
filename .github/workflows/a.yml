@@ -17,7 +17,7 @@ jobs:
 
     steps:
 
-    - uses: li1ht2ay-3es/te1pl2te@build
+    - uses: li1ht2ay-3es/sq1as2fs-3oo4s-n5@build
       with:
         branch: upstream
         arch: ${{ matrix.arch }}
