@@ -224,7 +224,7 @@ char *strchrnul(const char *s, int c);
 #define AT_FDCWD ((int)0xDEADBEEF)
 #define AT_SYMLINK_NOFOLLOW (0x01)
 
-#ifndef SSIZE_T
+#ifndef ssize_t
 typedef SSIZE_T ssize_t;
 #endif
 
