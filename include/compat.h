@@ -224,7 +224,9 @@ char *strchrnul(const char *s, int c);
 #define AT_FDCWD ((int)0xDEADBEEF)
 #define AT_SYMLINK_NOFOLLOW (0x01)
 
+#ifndef SSIZE_T
 typedef SSIZE_T ssize_t;
+#endif
 
 int fchownat(int dirfd, const char *path, int uid, int gid, int flags);
 
