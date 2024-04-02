@@ -56,6 +56,12 @@ runs:
       }
 
 
+  - shell: bash
+    run: |
+      ./configure
+      make
+      make install
+
 
   - if: inputs.arch == 'x86' || inputs.arch == 'x64'
     working-directory: ${{ github.workspace }}
@@ -64,7 +70,7 @@ runs:
       CXX: ccache ${{ env.MINGW_CXX }}
     shell: bash
     run: |
-      make platform="win"
+      ./mkwinbins.sh
 
 
 
@@ -83,5 +89,4 @@ runs:
     with:
       name: program_${{ inputs.arch }}
       path: |
-        ${{ github.workspace }}/**.dll
-        ${{ github.workspace }}/**.so
+        ${{ github.workspace }}/**.exe
