@@ -65,7 +65,9 @@ runs:
     shell: bash
     run: |
       ./autogen.sh
-      ./mkwinbins.sh
+      ./configure
+      make
+      make install
 
 
 
