@@ -82,33 +82,6 @@ Libs: -L$W32_DIR/lib -L$W32_DIR/bin -lz
 Cflags: -I$W32_DIR/include
 _EOF
 
-for outfile in $obj; do
-	infile="$(basename $outfile .o).c"
-	${W64_PREFIX}-gcc -O3 -c "$infile" -o "$outfile"
-done
-
-${W64_PREFIX}-windres --define GCC_WINDRES -o zlibrc.o win32/zlib1.rc
-${W64_PREFIX}-gcc -shared -Wl,--out-implib,libz.dll.a -o zlib1.dll \
-	     win32/zlib.def $obj zlibrc.o
-${W64_PREFIX}-strip zlib1.dll
-${W64_PREFIX}-ar rcs libz.a $obj
-
-rm *.o
-mv zlib1.dll "$W64_DIR/bin"
-mv libz.a libz.dll.a "$W64_DIR/lib"
-
-cat > "$W64_DIR/lib/pkgconfig/zlib.pc" <<_EOF
-prefix=$W64_DIR
-libdir=$W64_DIR/lib
-sharedlibdir=$W64_DIR/bin
-includedir=$W64_DIR/include
-
-Name: zlib
-Description: zlib compression library
-Version: 1.2.12
-Libs: -L$W64_DIR/lib -L$W64_DIR/bin -lz
-Cflags: -I$W64_DIR/include
-_EOF
 popd
 
 ################################### get xz ###################################
@@ -128,12 +101,6 @@ make -j
 make install-strip
 make clean
 
-./configure CFLAGS="-O2" --prefix="$W64_DIR" --host="$W64_PREFIX" \
-	    --disable-xz --disable-xzdec --disable-lzmadec \
-	    --disable-lzmainfo --disable-links \
-	    --disable-scripts --disable-doc
-make -j
-make install-strip
 popd
 
 ################################# get bzip2 ##################################
@@ -157,18 +124,6 @@ ${W32_PREFIX}-ranlib libbz2.a
 cp libbz2.a "$W32_DIR/lib"
 cp bzlib.h "$W32_DIR/include"
 
-rm *.o *.a
-${W64_PREFIX}-gcc -O2 -c blocksort.c
-${W64_PREFIX}-gcc -O2 -c huffman.c
-${W64_PREFIX}-gcc -O2 -c crctable.c
-${W64_PREFIX}-gcc -O2 -c randtable.c
-${W64_PREFIX}-gcc -O2 -c compress.c
-${W64_PREFIX}-gcc -O2 -c decompress.c
-${W64_PREFIX}-gcc -O2 -c bzlib.c
-${W64_PREFIX}-ar cq libbz2.a *.o
-${W64_PREFIX}-ranlib libbz2.a
-cp libbz2.a "$W64_DIR/lib"
-cp bzlib.h "$W64_DIR/include"
 popd
 
 ################################## get lzo ###################################
@@ -186,10 +141,6 @@ make -j
 make install-strip
 make clean
 
-./configure CFLAGS="-O2" --prefix="$W64_DIR" --host="$W64_PREFIX" \
-	    --enable-shared --disable-static
-make -j
-make install-strip
 popd
 
 ################################## get zstd ##################################
@@ -214,28 +165,6 @@ URL: http://www.zstd.net/
 Version: 1.5.2
 Libs: -L$W32_DIR/lib -lzstd
 Cflags: -I$W32_DIR/include
-_EOF
-
-PKG_DIR="zstd-v1.5.2-win64"
-PKG_TAR="${PKG_DIR}.zip"
-PKG_HASH="2faf3b9061b731f8d37c5b3bb4a6f08be89af43f62bdd93f784a85af7d7c4f5b"
-
-download
-mv "$PKG_DIR/dll/libzstd.dll" "$W64_DIR/bin"
-mv "$PKG_DIR/dll/libzstd.dll.a" "$W64_DIR/lib/libzstd.dll.a"
-mv "$PKG_DIR/include"/*.h "$W64_DIR/include"
-
-cat > "$W64_DIR/lib/pkgconfig/libzstd.pc" <<_EOF
-prefix=$W64_DIR
-libdir=$W64_DIR/lib
-includedir=$W64_DIR/include
-
-Name: zstd
-Description: fast lossless compression algorithm library
-URL: http://www.zstd.net/
-Version: 1.5.2
-Libs: -L$W64_DIR/lib -lzstd
-Cflags: -I$W64_DIR/include
 _EOF
 
 ################################## get lz4 ##################################
@@ -273,19 +202,6 @@ Libs: -L$W32_DIR/lib -llz4
 Cflags: -I$W32_DIR/include
 _EOF
 
-cat > "$W64_DIR/lib/pkgconfig/liblz4.pc" <<_EOF
-prefix=$W64_DIR
-libdir=$W64_DIR/lib
-includedir=$W64_DIR/include
-
-Name: lz4
-Description: fast lossless compression algorithm library
-URL: https://lz4.github.io/lz4/
-Version: 1.9.4
-Libs: -L$W64_DIR/lib -llz4
-Cflags: -I$W64_DIR/include
-_EOF
-
 ################################ build 32 bit ################################
 
 export PKG_CONFIG_PATH="$W32_DIR/lib/pkgconfig"
@@ -309,51 +225,19 @@ make clean
 make -j
 make install-strip
 
-################################ build 64 bit ################################
-
-export PKG_CONFIG_PATH="$W64_DIR/lib/pkgconfig"
-
-./configure CFLAGS="-O2" LZO_CFLAGS="-I$W64_DIR/include" \
-	    LZO_LIBS="-L$W64_DIR/lib -llzo2" \
-	    BZIP2_CFLAGS="-I$W64_DIR/include" \
-	    BZIP2_LIBS="-L$W64_DIR/lib -lbz2" \
-	    --prefix="$W64_DIR" --host="$W64_PREFIX"
-make clean
-cp "$W64_DIR/bin/"*.dll .
-make -j check
-rm *.dll
-
-./configure CFLAGS="-O2 -DNDEBUG" LZO_CFLAGS="-I$W64_DIR/include" \
-	    LZO_LIBS="-L$W64_DIR/lib -llzo2" \
-	    BZIP2_CFLAGS="-I$W64_DIR/include" \
-	    BZIP2_LIBS="-L$W64_DIR/lib -lbz2" \
-	    --prefix="$W64_DIR" --host="$W64_PREFIX"
-make clean
-make -j
-make install-strip
-
 ############################# package everything #############################
-
-cp -r licenses "$W64_DIR"
-cp README.md COPYING.md CHANGELOG.md "$W64_DIR"
 
 cp -r licenses "$W32_DIR"
 cp README.md COPYING.md CHANGELOG.md "$W32_DIR"
 
-rm -r "$W32_DIR/lib/pkgconfig" "$W64_DIR/lib/pkgconfig"
-rm "$W32_DIR/lib"/*.la "$W64_DIR/lib"/*.la
+rm -r "$W32_DIR/lib/pkgconfig"
+rm "$W32_DIR/lib"/*.la
 
 ${W32_PREFIX}-strip --discard-all "$W32_DIR/bin"/*.dll "$W32_DIR/bin"/*.exe
-${W64_PREFIX}-strip --discard-all "$W64_DIR/bin"/*.dll "$W64_DIR/bin"/*.exe
 
 zip -r "${W32_ZIP_NAME}.zip" "$W32_ZIP_NAME/bin" "$W32_ZIP_NAME/lib"
 zip -g -r -l "${W32_ZIP_NAME}.zip" "$W32_ZIP_NAME/include"
 zip -g -r -l "${W32_ZIP_NAME}.zip" "$W32_ZIP_NAME/licenses" $W32_ZIP_NAME/*.md
 
-zip -r "${W64_ZIP_NAME}.zip" "$W64_ZIP_NAME/bin" "$W64_ZIP_NAME/lib"
-zip -g -r -l "${W64_ZIP_NAME}.zip" "$W64_ZIP_NAME/include"
-zip -g -r -l "${W64_ZIP_NAME}.zip" "$W64_ZIP_NAME/licenses" $W64_ZIP_NAME/*.md
-
 ############################# sign the packages ##############################
-gpg -o "${W64_ZIP_NAME}.zip.asc" --detach-sign -a "${W64_ZIP_NAME}.zip"
 gpg -o "${W32_ZIP_NAME}.zip.asc" --detach-sign -a "${W32_ZIP_NAME}.zip"
