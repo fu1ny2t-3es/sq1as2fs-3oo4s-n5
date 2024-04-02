@@ -64,6 +64,7 @@ runs:
       CXX: ccache ${{ env.MINGW_CXX }}
     shell: bash
     run: |
+      ./autogen.sh
       ./mkwinbins.sh
 
 
@@ -76,6 +77,9 @@ runs:
     shell: bash
     run: |
       ./autogen.sh
+      ./configure
+      make
+      make install
 
 
 
