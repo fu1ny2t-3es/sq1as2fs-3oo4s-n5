@@ -8,7 +8,8 @@ jobs:
   build:
     strategy:
       matrix:
-        arch: [so64, x86, x64]
+        # arch: [so64, x86, x64]
+        arch: [x86]
       fail-fast: false
 
 
